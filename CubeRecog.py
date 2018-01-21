@@ -8,9 +8,6 @@ import glob
 """
 
 """
-imgs = cv2.imread('Cube2.jpg')
-
-
 # Convert  image to HSV
 hsv = cv2.cvtColor(imgs, cv2.COLOR_BGR2HSV)
 
