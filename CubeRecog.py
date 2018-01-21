@@ -33,13 +33,15 @@ print("Done?")
 while (1):
 """
 cam = cv2.VideoCapture(1)
+# cam.set(cv2.CAP_PROP_EXPOSURE, -4)
 
 while True:
+
     _, frame = cam.read()
 
     # create NumPy arrays from the boundaries
     lower = np.array([0, 180, 180], dtype="uint8")
-    upper = np.array([140, 255, 255], dtype="uint8")
+    upper = np.array([155, 255, 255], dtype="uint8")
 
     # find the colors within the specified boundaries and apply
     # the mask
