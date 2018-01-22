@@ -1,2 +1,2 @@
 # 2018-Vision
-Code for Vision Processing 2018 Robotics
+Vision processing using OpenCV for line and cube detections by Jackson and Donovan.
