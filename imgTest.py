@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 
 
 # TODO make multiple filters for lighting issues
+# TODO DRAW IT ON THE MASK
 
 def filter0(frame):
 
