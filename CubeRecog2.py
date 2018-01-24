@@ -4,12 +4,14 @@ from matplotlib import pyplot as plt
 
 
 # TODO make multiple filters for lighting issues
-
 # TODO make the range a linear function
+
 """
-TODO use a program that uses how much red a pixel contains and calculates the parameter of what is considered as "yellow"
-using a linear function, start with a 2D function first and then use a 3D function
+This is a model that DOES NOT WORK
+I kept it here because there are useful  stuff in this code
+Don't delete
 """
+
 def find_edges(mask):
 
     kernel = np.ones((5, 5), np.float32) / 10

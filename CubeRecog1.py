@@ -6,7 +6,8 @@ cam = cv2.VideoCapture(1)
 # cam.set(cv2.CAP_PROP_EXPOSURE, -4)
 
 """
-This is a temporary model that works, but it doesn't work that well
+This is a temporary model that works...
+(Doesn't work that well)
 """
 
 while True:

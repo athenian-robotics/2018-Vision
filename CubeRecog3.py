@@ -6,6 +6,10 @@ import math
 # TODO it takes 7-10 second to process one single image (Cube 1) make it faster
 # TODO look into Numpy and different ways of processing images
 
+"""
+This is a model that works but probably could not be implemented without optimization. Takes too long for one image 
+to process (7-10 seconds)
+"""
 
 img = cv2.imread("Cube2.jpg")
 
