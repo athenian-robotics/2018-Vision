@@ -36,7 +36,7 @@ for x in range(len(red_list)):
 
 
 final_image = cv2.merge((blue_list, green_list, red_list))
-cv2.imshow("FUCK YOU", np.hstack([img, final_image]))
+cv2.imshow("images", np.hstack([img, final_image]))
 cv2.waitKey(0)
 
 """
