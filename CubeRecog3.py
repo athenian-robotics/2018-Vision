@@ -14,67 +14,65 @@ to process (7-10 seconds)
 # TODO find out why it's only detecting a square 960 x 960 pixel image
 
 
-class process
+def wut(name):
 
-    def __init__(self, name):
-        self.name = name
+    print(name)
 
-        img = cv2.imread(name)
-        height, width, channels = img.shape
-        # Split image into 3 two dimensional list
-        blue_list, green_list, red_list = cv2.split(img)
+    img = cv2.imread(name)
+    height, width, channels = img.shape
+    # Split image into 3 two dimensional list
+    blue_list, green_list, red_list = cv2.split(img)
 
-        print("height: " + str(height))
-        print("width: " + str(width) + "\n")
+    print("height: " + str(height))
+    print("width: " + str(width) + "\n")
 
-        # loop through all of red_list to access the array inside
-        for x in range(width): # len(red_list)
-            # loop through individual values in the inner most list, and those values are the red values of the pixels
-            for i in range(height):  #len(red_list)
+    # loop through all of red_list to access the array inside
+    for x in range(width): # len(red_list)
+        # loop through individual values in the inner most list, and those values are the red values of the pixels
+        for i in range(height):  #len(red_list)
 
-                # Assign values so it's easier to manage
-                red = red_list[i][x]
-                blue = blue_list[i][x]
-                green = green_list[i][x]
+            # Assign values so it's easier to manage
+            red = red_list[i][x]
+            blue = blue_list[i][x]
+            green = green_list[i][x]
 
-                # Setting the green high and low parameter, it's proportional to red
-                green_low = red - 30
-                green_high = red + 18
+            # Setting the green high and low parameter, it's proportional to red
+            green_low = red - 30
+            green_high = red + 18
 
-                # difference is the difference between red/green and blue, since blue is not usually used in yellow
-                # the difference needs to be big
-                difference = (int(green) + int(red))/2 - int(blue)
+            # difference is the difference between red/green and blue, since blue is not usually used in yellow
+            # the difference needs to be big
+            difference = (int(green) + int(red))/2 - int(blue)
 
-                # Similarity detects the similarities in red blue and green, used for excluding grey, white, black pixel
-                similarity = (abs(int(green)-int(red)) + abs(int(red)-int(blue)) + abs(int(green)-int(blue)))
+            # Similarity detects the similarities in red blue and green, used for excluding grey, white, black pixel
+            similarity = (abs(int(green)-int(red)) + abs(int(red)-int(blue)) + abs(int(green)-int(blue)))
 
-                # green has to be inside parameter
-                green_in_param = green_low <= green <= green_high
+            # green has to be inside parameter
+            green_in_param = green_low <= green <= green_high
 
-                # if the difference bigger between red and blue is higher than 80, it is NOT yellow
-                isYellow = difference >= 70
+            # if the difference bigger between red and blue is higher than 80, it is NOT yellow
+            isYellow = difference >= 55
 
-                # if the sum of the differences of all 3 rbg values are within 30, that means that it's grey
-                isGrey = similarity <= 30
+            # if the sum of the differences of all 3 rbg values are within 30, that means that it's grey
+            isGrey = similarity <= 30
 
-                # if either of those statements are false, it will set te pixel to black
-                if not green_in_param or not isYellow or isGrey:
-                    green_list[i][x] = 0
-                    blue_list[i][x] = 0
-                    red_list[i][x] = 0
+            # if either of those statements are false, it will set te pixel to black
+            if not green_in_param or not isYellow or isGrey:
+                green_list[i][x] = 0
+                blue_list[i][x] = 0
+                red_list[i][x] = 0
 
-        final_image = cv2.merge((blue_list, green_list, red_list))
-        cv2.imshow("processing", np.hstack([img, final_image]))
-        cv2.waitKey(0)
+    final_image = cv2.merge((blue_list, green_list, red_list))
+    return final_image
 
 
-process("Cube1.jpg")
-process("Cube1.jpg")
-process("Cube1.jpg")
-process("Cube1.jpg")
-process("Cube1.jpg")
-
-
+while True:
+    cv2.imshow("Cube #1", wut("Cube1.jpg"))
+    cv2.imshow("Cube #2", wut("Cube2.jpg"))
+    cv2.imshow("Cube #3", wut("Cube3.jpg"))
+    cv2.imshow("Cube #4", wut("Cube4.jpg"))
+    cv2.imshow("Cube #5", wut("Cube5.jpg"))
+    cv2.waitKey(0)
 
 """
 
