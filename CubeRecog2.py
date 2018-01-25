@@ -12,6 +12,7 @@ I kept it here because there are useful  stuff in this code
 Don't delete
 """
 
+
 def find_edges(mask):
 
     kernel = np.ones((5, 5), np.float32) / 10
