@@ -62,7 +62,19 @@ def wut(name):
                 blue_list[i][x] = 0
                 red_list[i][x] = 0
 
+    lower = np.array([1, 1, 1], dtype="uint8")
+    upper = np.array([255, 255, 255], dtype="uint8")
+
     final_image = cv2.merge((blue_list, green_list, red_list))
+    mask = cv2.inRange(final_image, lower, upper)
+    try:
+        im2, contours, hierarchy = cv2.findContours(mask,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cnt = max(contours, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(cnt)
+        cv2.rectangle(final_image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    except ValueError:
+        pass
+
     return final_image
 
 
@@ -73,27 +85,3 @@ while True:
     cv2.imshow("Cube #4", wut("Cube4.jpg"))
     cv2.imshow("Cube #5", wut("Cube5.jpg"))
     cv2.waitKey(0)
-
-"""
-
-    hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-    # mask finds all the colors in range of the boundary and blocks out the rest
-    mask = cv2.inRange(frame, lower, upper)
-
-    # Split each frame to HSV to decrease or increase brightness
-    h, s, v = cv2.split(hsv_frame)
-    v += 100
-    final_hsv = cv2.merge((h, s, v))
-
-    # background takes final_hsv and is converted to RGB format
-    background = cv2.cvtColor(final_hsv, cv2.COLOR_HSV2BGR)
-
-    # Converts mask to HSV so that it could be used to decrease brightness later
-    layer1 = cv2.bitwise_and(background, background, mask=mask)
-
-    cv2.imshow("layer1", layer1)
-
-    return layer1
-
-"""
