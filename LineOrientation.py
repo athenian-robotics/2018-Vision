@@ -42,12 +42,15 @@ while 1:
             p1 = (x1, y1)
             p2 = (x2, y2)
             cv2.line(img_cpy, p1, p2, (0, 0, 255), 2)
+            print(dist(p1, p2))
     except:
         print('No Line found')
-    print(dist(p1, p2))
     cv2.imshow('Canny', red_m)
     cv2.imshow('Original', img_cpy)
+    print(p1)
+    print(p2)
     if cv2.waitKey(1) & 0xFF == ord('q') or cv2.waitKey(1) & 0xFF == ord('\x1b'):
         break
+
 cap.release()
 cv2.destroyAllWindows()

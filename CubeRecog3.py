@@ -11,10 +11,54 @@ This is a model that works but probably could not be implemented without optimiz
 to process (7-10 seconds)
 """
 
-# TODO find out why it's only detecting a square 960 x 960 pixel image
+# TODO Find pixel of Camera so that the pixels are aligned
 
 
-def wut(name):
+def find_centroid(contour, img):
+
+    # compute the center of the contour
+    M = cv2.moments(contour)
+    cX = int(M["m10"] / M["m00"])
+    cY = int(M["m01"] / M["m00"])
+
+    # draw the center of the shape on the image
+    cv2.circle(img, (cX, cY), 7, (0, 0, 255), -1)
+
+    # Put words on image
+    cv2.putText(img, "X: " + str(cX), (cX - 25, cY - 25),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+
+    cv2.putText(img, "Y: " + str(cY), (cX - 25, cY - 50),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+
+    print("X: " + str(cX) + " Y: " + str(cY) + "\n")
+
+    return img
+
+
+def find_edges(mask):
+
+    # Tying to use edge detection for finding edges, not really necessary
+    kernel = np.ones((5, 5), np.float32) / 10
+    dst = cv2.filter2D(mask, -1, kernel)
+    edges = cv2.Canny(dst, 100, 200)
+
+    return edges
+
+
+def find_mask(img):
+
+    # find images that are not black and turn them white
+    lower = np.array([1, 1, 1], dtype="uint8")
+    upper = np.array([255, 255, 255], dtype="uint8")
+
+    # Use a mask to find the contour and plot the rectangle
+    mask = cv2.inRange(img, lower, upper)
+
+    return mask
+
+
+def find_color(name):
 
     print(name)
 
@@ -24,12 +68,12 @@ def wut(name):
     blue_list, green_list, red_list = cv2.split(img)
 
     print("height: " + str(height))
-    print("width: " + str(width) + "\n")
+    print("width: " + str(width))
 
     # loop through all of red_list to access the array inside
-    for x in range(width): # len(red_list)
+    for x in range(width):
         # loop through individual values in the inner most list, and those values are the red values of the pixels
-        for i in range(height):  #len(red_list)
+        for i in range(height):
 
             # Assign values so it's easier to manage
             red = red_list[i][x]
@@ -62,26 +106,32 @@ def wut(name):
                 blue_list[i][x] = 0
                 red_list[i][x] = 0
 
-    lower = np.array([1, 1, 1], dtype="uint8")
-    upper = np.array([255, 255, 255], dtype="uint8")
-
+    # Merge and create the processed image
     final_image = cv2.merge((blue_list, green_list, red_list))
-    mask = cv2.inRange(final_image, lower, upper)
+
     try:
-        im2, contours, hierarchy = cv2.findContours(mask,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        im2, contours, hierarchy = cv2.findContours(find_mask(final_image), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnt = max(contours, key=cv2.contourArea)
         x, y, w, h = cv2.boundingRect(cnt)
-        cv2.rectangle(final_image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.rectangle(final_image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        find_centroid(cnt, final_image)
     except ValueError:
         pass
 
-    return final_image
+    # Return the final image side by side with the original with np.hstack
+    hm = np.hstack([img, final_image])
+    return hm
 
 
-while True:
-    cv2.imshow("Cube #1", wut("Cube1.jpg"))
-    cv2.imshow("Cube #2", wut("Cube2.jpg"))
-    cv2.imshow("Cube #3", wut("Cube3.jpg"))
-    cv2.imshow("Cube #4", wut("Cube4.jpg"))
-    cv2.imshow("Cube #5", wut("Cube5.jpg"))
-    cv2.waitKey(0)
+Cube1 = find_color("Cube1.jpg")
+Cube2 = find_color("Cube2.jpg")
+Cube3 = find_color("Cube3.jpg")
+Cube4 = find_color("Cube4.jpg")
+Cube5 = find_color("Cube5.jpg")
+
+cv2.imshow("Cube1", Cube1)
+cv2.imshow("Cube2", Cube2)
+cv2.imshow("Cube3", Cube3)
+cv2.imshow("Cube4", Cube4)
+cv2.imshow("Cube5", Cube5)
+cv2.waitKey(0)
