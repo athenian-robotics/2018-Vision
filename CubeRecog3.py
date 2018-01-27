@@ -16,11 +16,15 @@ to process (7-10 seconds)
 
 def find_centroid(contour, img):
 
-    # compute the center of the contour
-    M = cv2.moments(contour)
-    cX = int(M["m10"] / M["m00"])
-    cY = int(M["m01"] / M["m00"])
+    try:
 
+        # compute the center of the contour
+        M = cv2.moments(contour)
+        cX = int(M["m10"] / M["m00"])
+        cY = int(M["m01"] / M["m00"])
+
+    except ZeroDivisionError:
+        pass
     # draw the center of the shape on the image
     cv2.circle(img, (cX, cY), 7, (0, 0, 255), -1)
 
@@ -60,16 +64,16 @@ def find_mask(img):
 
 def find_color(name):
 
-    print(name)
+    # print(name)
 
-    img = cv2.imread(name)
-    img = cv2.resize(img, None, fx=0.4, fy=0.4, interpolation=cv2.INTER_CUBIC)
+    # img = cv2.imread(name)
+    img = cv2.resize(name, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
     height, width, channels = img.shape
     # Split image into 3 two dimensional list
     blue_list, green_list, red_list = cv2.split(img)
 
-    print("height: " + str(height))
-    print("width: " + str(width))
+    # print("height: " + str(height))
+    # print("width: " + str(width))
 
     # loop through all of red_list to access the array inside
     for x in range(width):
@@ -114,16 +118,32 @@ def find_color(name):
         im2, contours, hierarchy = cv2.findContours(find_mask(final_image), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnt = max(contours, key=cv2.contourArea)
         x, y, w, h = cv2.boundingRect(cnt)
-        cv2.rectangle(final_image, (x, y), (x + w, y + h), (0, 0, 255), 2)
         find_centroid(cnt, final_image)
+        cv2.rectangle(final_image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
     except ValueError:
         pass
-
     # Return the final image side by side with the original with np.hstack
-    hm = np.hstack([img, final_image])
-    return hm
+    # hm = np.hstack([img, name])
+    return final_image
 
 
+cam = cv2.VideoCapture(0)
+
+# cam.set(cv2.CAP_PROP_EXPOSURE, -4)
+while True:
+    _, frames = cam.read()
+    # Resize Window
+    cv2.namedWindow('Processed', cv2.WINDOW_NORMAL)
+    cv2.resizeWindow('Processed', 2400, 1200)
+    # cv2.imshow("Original", frames)
+    cv2.imshow("Processed", find_color(frames))
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+cam.release()
+cv2.destroyAllWindows()
+
+"""
 Cube1 = find_color("Test_Image/Cube1.jpg")
 Cube2 = find_color("Test_Image/Cube2.jpg")
 Cube3 = find_color("Test_Image/Cube3.jpg")
@@ -142,3 +162,4 @@ cv2.imshow("Cube6", Cube6)
 cv2.imshow("Cube7", Cube7)
 cv2.imshow("Cube8", Cube8)
 cv2.waitKey(0)
+"""
