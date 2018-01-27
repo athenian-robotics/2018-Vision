@@ -63,6 +63,7 @@ def find_color(name):
     print(name)
 
     img = cv2.imread(name)
+    img = cv2.resize(img, None, fx=0.4, fy=0.4, interpolation=cv2.INTER_CUBIC)
     height, width, channels = img.shape
     # Split image into 3 two dimensional list
     blue_list, green_list, red_list = cv2.split(img)
