@@ -123,15 +123,21 @@ def find_color(name):
     return hm
 
 
-Cube1 = find_color("Cube1.jpg")
-Cube2 = find_color("Cube2.jpg")
-Cube3 = find_color("Cube3.jpg")
-Cube4 = find_color("Cube4.jpg")
-Cube5 = find_color("Cube5.jpg")
+Cube1 = find_color("Test_Image/Cube1.jpg")
+Cube2 = find_color("Test_Image/Cube2.jpg")
+Cube3 = find_color("Test_Image/Cube3.jpg")
+Cube4 = find_color("Test_Image/Cube4.jpg")
+Cube5 = find_color("Test_Image/Cube5.jpg")
+Cube6 = find_color("Test_Image/Cube6.jpg")
+Cube7 = find_color("Test_Image/Cube7.jpg")
+Cube8 = find_color("Test_Image/Cube8.jpg")
 
 cv2.imshow("Cube1", Cube1)
 cv2.imshow("Cube2", Cube2)
 cv2.imshow("Cube3", Cube3)
 cv2.imshow("Cube4", Cube4)
 cv2.imshow("Cube5", Cube5)
+cv2.imshow("Cube6", Cube6)
+cv2.imshow("Cube7", Cube7)
+cv2.imshow("Cube8", Cube8)
 cv2.waitKey(0)
