@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.9)
+#if (UNIX)
+#    set(CMAKE_CXX_FLAGS "-O3")
+#endif ()
+set(CMAKE_CXX_STANDARD 11)
+project(CubeRecog)
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+set(PROJECT_SRC CubeRecog.cpp CubeRecog.h  main.cpp)
+#set(PROJECT_SRC CameraTest.cpp)
+add_executable(2018-Vision ${PROJECT_SRC})
+target_link_libraries(2018-Vision ${OpenCV_LIBS})
+
