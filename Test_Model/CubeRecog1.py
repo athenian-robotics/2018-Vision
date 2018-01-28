@@ -10,8 +10,16 @@ This is a temporary model that works...
 (Doesn't work that well)
 """
 
+"""
+ Microsoft® LifeCam HD-3000: Mi (usb-0000:00:14.0-1):
+ 	/dev/video1
+  -d, --device=<dev> use device <dev> instead of /dev/video0
+
+
+"""
 while True:
 
+    minimum_pixels = 500
     _, frame = cam.read()
 
     # create NumPy arrays from the boundaries
@@ -27,9 +35,17 @@ while True:
 
     try:
         im2, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        cnt = max(contours, key=cv2.contourArea)
-        x, y, w, h = cv2.boundingRect(cnt)
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        eligible = [c for c in contours if cv2.moments(c)["m00"] >= minimum_pixels]
+
+        for x in range(len(contours)):
+            if cv2.moments(x)["m00"] >= 75:
+                eligible.append(contours[x])
+        # val = sorted(eligible, key=lambda v: cv2.moments(v)["m00"], reverse=True)[:4]
+        for i in range(len(eligible)):
+            # cnt = max(contours, key=cv2.contourArea)
+            x, y, w, h = cv2.boundingRect(eligible[i])
+            # eligible.remove(cnt)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
     except ValueError:
         pass

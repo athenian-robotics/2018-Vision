@@ -13,6 +13,8 @@ to process (7-10 seconds)
 
 # TODO Find pixel of Camera so that the pixels are aligned
 
+# TODO FIND MULTIPLE CONTOURS
+
 
 def find_centroid(contour, img):
 
@@ -23,32 +25,36 @@ def find_centroid(contour, img):
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
 
+        # create a list for the big contours
+        eligible = []
+
+        for x in range(len(contour)):
+            if cv2.moments(x)["m00"] >= 0:
+                eligible.append(contour[x])
+
+        # box the stuff
+        for i in range(len(eligible)):
+
+            x, y, w, h = cv2.boundingRect(eligible[i])
+
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            # draw the center of the shape on the image
+            cv2.circle(img, (cX, cY), 7, (0, 0, 255), -1)
+
+            # Put words on image
+            cv2.putText(img, "X: " + str(cX), (cX - 25, cY - 25),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 0, 255), 2)
+
+            cv2.putText(img, "Y: " + str(cY), (cX - 25, cY - 50),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 0, 255), 2)
+
+            print("X: " + str(cX) + " Y: " + str(cY) + "\n")
+
     except ZeroDivisionError:
         pass
-    # draw the center of the shape on the image
-    cv2.circle(img, (cX, cY), 7, (0, 0, 255), -1)
-
-    # Put words on image
-    cv2.putText(img, "X: " + str(cX), (cX - 25, cY - 25),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
-
-    cv2.putText(img, "Y: " + str(cY), (cX - 25, cY - 50),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
-
-    print("X: " + str(cX) + " Y: " + str(cY) + "\n")
 
     return img
-
-
-def find_edges(mask):
-
-    # Tying to use edge detection for finding edges, not really necessary
-    kernel = np.ones((5, 5), np.float32) / 10
-    dst = cv2.filter2D(mask, -1, kernel)
-    edges = cv2.Canny(dst, 100, 200)
-
-    return edges
-
 
 def find_mask(img):
 
@@ -67,7 +73,7 @@ def find_color(name):
     # print(name)
 
     # img = cv2.imread(name)
-    img = cv2.resize(name, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
+    img = cv2.resize(name, None, fx=1, fy=1, interpolation=cv2.INTER_CUBIC)
     height, width, channels = img.shape
     # Split image into 3 two dimensional list
     blue_list, green_list, red_list = cv2.split(img)
@@ -117,9 +123,8 @@ def find_color(name):
     try:
         im2, contours, hierarchy = cv2.findContours(find_mask(final_image), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnt = max(contours, key=cv2.contourArea)
-        x, y, w, h = cv2.boundingRect(cnt)
+
         find_centroid(cnt, final_image)
-        cv2.rectangle(final_image, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
     except ValueError:
         pass
@@ -128,7 +133,7 @@ def find_color(name):
     return final_image
 
 
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(1)
 
 # cam.set(cv2.CAP_PROP_EXPOSURE, -4)
 while True:
@@ -142,24 +147,3 @@ while True:
         break
 cam.release()
 cv2.destroyAllWindows()
-
-"""
-Cube1 = find_color("Test_Image/Cube1.jpg")
-Cube2 = find_color("Test_Image/Cube2.jpg")
-Cube3 = find_color("Test_Image/Cube3.jpg")
-Cube4 = find_color("Test_Image/Cube4.jpg")
-Cube5 = find_color("Test_Image/Cube5.jpg")
-Cube6 = find_color("Test_Image/Cube6.jpg")
-Cube7 = find_color("Test_Image/Cube7.jpg")
-Cube8 = find_color("Test_Image/Cube8.jpg")
-
-cv2.imshow("Cube1", Cube1)
-cv2.imshow("Cube2", Cube2)
-cv2.imshow("Cube3", Cube3)
-cv2.imshow("Cube4", Cube4)
-cv2.imshow("Cube5", Cube5)
-cv2.imshow("Cube6", Cube6)
-cv2.imshow("Cube7", Cube7)
-cv2.imshow("Cube8", Cube8)
-cv2.waitKey(0)
-"""
