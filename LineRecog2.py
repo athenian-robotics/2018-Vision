@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import math
 
+# TODO Change the way it plots the lines, make it go from centroid to side not corner to corner (Step 1)
+# TODO Find the angle (Step 2)
 
 def is_red(red, blue, green):
 
