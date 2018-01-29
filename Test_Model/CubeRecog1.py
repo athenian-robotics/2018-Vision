@@ -12,7 +12,7 @@ This is a temporary model that works...
 
 """
  Microsoft® LifeCam HD-3000: Mi (usb-0000:00:14.0-1):
- 	/dev/video1
+  /dev/video1
   -d, --device=<dev> use device <dev> instead of /dev/video0
 
 
