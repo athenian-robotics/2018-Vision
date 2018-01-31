@@ -104,9 +104,9 @@ def find_line(name):
     return pImage
 
 
-cv2.imshow("IMAGE1", find_line("Test_Image/Line1.jpg"))
-cv2.imshow("IMAGE2", find_line("Test_Image/Line2.jpg"))
-cv2.imshow("IMAGE3", find_line("Test_Image/Line3.jpg"))
-cv2.imshow("IMAGE4", find_line("Test_Image/Line4.jpg"))
+# cv2.imshow("IMAGE1", find_line("../Test_Image/Line1.jpg"))
+# cv2.imshow("IMAGE2", find_line("../Test_Image/Line2.jpg"))
+cv2.imshow("IMAGE3", find_line("../Test_Image/Line3.jpg"))
+# cv2.imshow("IMAGE4", find_line("../Test_Image/Line4.jpg"))
 
 cv2.waitKey(0)

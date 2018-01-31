@@ -1,3 +1,7 @@
 # 2018-Vision
 
-**Vision processing using OpenCV for line and cube detections by Jackson and Donovan.**
+**Vision system for FRC team 852.**
+#### Dependencies
+* OpenCV
+* ROS
+* CMake

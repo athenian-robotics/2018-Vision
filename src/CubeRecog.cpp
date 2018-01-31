@@ -15,11 +15,6 @@ cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
     int nRows = blue_chan.rows;
     int nCols = blue_chan.cols;
 
-    // Check if its all in one column
-    if (blue_chan.isContinuous()) {
-        nCols *= nRows;
-        nRows = 1;
-    }
     uchar *p_blue;
     uchar *p_green;
     uchar *p_red;

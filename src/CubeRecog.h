@@ -2,8 +2,8 @@
 // Created by Jackson Moffet on 1/25/18.
 //
 
-#ifndef INC_2018_VISION_CUBERECOG_H
-#define INC_2018_VISION_CUBERECOG_H
+#ifndef CUBERECOG_H
+#define CUBERECOG_H
 
 #include <opencv2/opencv.hpp>
 #include <iostream>
@@ -38,4 +38,4 @@ private:
 };
 
 
-#endif //INC_2018_VISION_CUBERECOG_H
+#endif //CUBERECOG_H

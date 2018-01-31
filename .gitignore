@@ -42,3 +42,6 @@ pip-delete-this-directory.txt
 .idea/
 *.iml
 *.ipr
+
+#Personal notes
+Notes.txt
