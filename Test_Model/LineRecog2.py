@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import math
 
-# TODO Change the way it plots the lines, make it go from centroid to side not corner to corner (Step 1)
-# TODO Find the angle (Step 2)
+# TODO Find a way to find the line dead on and not twisted
+
 
 def is_red(red, blue, green):
 
@@ -29,17 +29,17 @@ def find_line(name):
     print("width: " + str(width) + "\n")
 
     # loop through craps and return a merged image with black stuff
-    for x in range(width):
+    for z in range(width):
         for i in range(height):
 
-            red = red_list[i][x]
-            blue = blue_list[i][x]
-            green = green_list[i][x]
+            red = red_list[i][z]
+            blue = blue_list[i][z]
+            green = green_list[i][z]
 
             if not is_red(red, blue, green):
-                green_list[i][x] = 0
-                blue_list[i][x] = 0
-                red_list[i][x] = 0
+                green_list[i][z] = 0
+                blue_list[i][z] = 0
+                red_list[i][z] = 0
 
     pImage = cv2.merge((blue_list, green_list, red_list))
 
@@ -51,41 +51,64 @@ def find_line(name):
 
     # get contour and craps
     try:
-
-        lines = cv2.HoughLines(mask, 1, np.pi / 180, 200)
-        for r, theta in lines[0]:
-            a = np.cos(theta)
-            b = np.sin(theta)
-            x0 = a * r
-            y0 = b * r
-            x1 = int(x0 + 1000 * (-b))
-            y1 = int(y0 + 1000 * a)
-            x2 = int(x0 - 1000 * (-b))
-            y2 = int(y0 - 1000 * a)
-            p1 = (x1, y1)
-            p2 = (x2, y2)
-            cv2.line(pImage, p1, p2, (0, 255, 0), 2)
-
-            print(np.sqrt(np.square(p1[0] - p1[0]) + np.square(p2[1] - p1[1])))
-
-        print("CHECK-1")
         im2, contours, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        right_low_x = 0
+        right_low_y = 0
+
+        p1_high = []
+        right_high_y = 0
+
+        p2_low = []
+        left_low_y = 5000
         cnt = max(contours, key=cv2.contourArea)
 
-        # get centroid
+        for i in range(len(contours[0])):
+
+            right_low_y = contours[0][i][0][1] if right_low_y <= contours[0][i][0][1] else right_low_y
+            right_low_x = contours[0][i][0][0] if right_low_x <= contours[0][i][0][0] else right_low_x
+
+            if right_high_y <= contours[0][i][0][1]:
+                right_high_y = contours[0][i][0][1]
+                p1_high = contours[0][i][0]
+
+            if left_low_y >= contours[0][i][0][1]:
+                left_low_y = contours[0][i][0][1]
+                p2_low = contours[0][i][0]
+
+        left_high_x = 5000
+        left_high_y = 5000
+
+        for z in range(len(contours[0])-1, 0, -1):
+            left_high_x = contours[0][z][0][0] if left_high_x >= contours[0][z][0][0] else left_high_x
+            left_high_y = contours[0][z][0][1] if left_high_y >= contours[0][z][0][1] else left_high_y
+
+        p1_low = [right_low_x, right_low_y]
+        p2_high = [left_high_x, left_high_y]
+
+        print(p1_low)
+        print(p1_high)
+
+        print(p2_low)
+        print(p2_high)
+
+        cv2.circle(pImage, (p1_low[0], p1_low[1]), 7, (0, 255, 0), -1)
+        cv2.circle(pImage, (p1_high[0], p1_high[1]), 7, (0, 255, 0), -1)
+        cv2.circle(pImage, (p2_high[0], p2_high[1]), 7, (0, 255, 0), -1)
+        cv2.circle(pImage, (p2_low[0], p2_low[1]), 7, (0, 255, 0), -1)
+
+        cv2.line(pImage, (p2_high[0], p2_high[1]), (p1_low[0], p1_low[1]), (0, 255, 0), thickness=2, lineType=8)
+        cv2.line(pImage, (p2_low[0], p2_low[1]), (p1_high[0], p1_high[1]), (0, 255, 0), thickness=2, lineType=8)
+
         M = cv2.moments(cnt)
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
 
-        print("CHECK1")
-
         if is_red(red_list[cY][cX], blue_list[cY][cX], green_list[cY][cX]):
 
-            print("CHECK2")
             # draw the center of the shape on the image
             cv2.circle(pImage, (cX, cY), 7, (0, 255, 0), -1)
 
-            print("CHECK3")
             # Put words on image
             cv2.putText(pImage, "X: " + str(cX), (cX - 25, cY - 25),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
@@ -96,7 +119,6 @@ def find_line(name):
             # Put words on image
             cv2.putText(pImage, "NOT A LINE YOU ****", (cX - 25, cY - 25),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-
     except:
         print("WTF")
         pass
@@ -104,9 +126,9 @@ def find_line(name):
     return pImage
 
 
-# cv2.imshow("IMAGE1", find_line("../Test_Image/Line1.jpg"))
+#cv2.imshow("IMAGE1", find_line("../Test_Image/Line1.jpg"))
 # cv2.imshow("IMAGE2", find_line("../Test_Image/Line2.jpg"))
-cv2.imshow("IMAGE3", find_line("../Test_Image/Line3.jpg"))
-# cv2.imshow("IMAGE4", find_line("../Test_Image/Line4.jpg"))
+# cv2.imshow("IMAGE3", find_line("../Test_Image/Line3.jpg"))
+cv2.imshow("IMAGE4", find_line("../Test_Image/Line4.jpg"))
 
 cv2.waitKey(0)

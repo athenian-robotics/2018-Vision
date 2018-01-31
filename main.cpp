@@ -7,7 +7,7 @@
 
 
 int main() {
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap(1);
     if (!cap.isOpened()) {
         std::cout << "BORK" << std::endl;
         return -1;
@@ -17,12 +17,13 @@ int main() {
     int tick = 0;
 
 
-    CubeRecog recog(640, 360);
+    CubeRecog recog(370, 640);
     printf("Ready\n");
     for (;;) {
         cv::Mat frame;
         cap >> frame;
         cv::Mat processed = recog.get_frame(frame);
+        cv2::resizeWindow('Processed', 2400, 1200)
         cv::imshow("Image", frame);
         cv::imshow("Processed", processed);
         if (cv::waitKey(1) >= 0) break;
