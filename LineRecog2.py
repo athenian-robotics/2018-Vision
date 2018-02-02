@@ -87,6 +87,7 @@ def find_line(name):
     print(name)
 
     img = cv2.imread(name)
+    img = cv2.resize(img, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
 
     height, width, channels = img.shape
     blue_list, green_list, red_list = cv2.split(img)
@@ -153,10 +154,10 @@ def find_line(name):
 
 
 # calls the function and return stuff
-# cv2.imshow("IMAGE2", find_line("../Test_Image/Line2.jpg"))
-# cv2.imshow("IMAGE3", find_line("../Test_Image/Line3.jpg"))
-# cv2.imshow("IMAGE4", find_line("../Test_Image/Line4.jpg"))
-# cv2.imshow("IMAGE5", find_line("../Test_Image/Line5.jpg"))
+cv2.imshow("IMAGE2", find_line("../Test_Image/Line2.jpg"))
+cv2.imshow("IMAGE3", find_line("../Test_Image/Line3.jpg"))
+cv2.imshow("IMAGE4", find_line("../Test_Image/Line4.jpg"))
+cv2.imshow("IMAGE5", find_line("../Test_Image/Line5.jpg"))
 
 cv2.imshow("IMAGE5", find_line("../Test_Image/ok.jpg"))
 cv2.waitKey(0)

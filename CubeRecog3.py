@@ -70,10 +70,10 @@ def find_mask(img):
 
 def find_color(name):
 
-    # print(name)
+    print(name)
 
-    # img = cv2.imread(name)
-    img = cv2.resize(name, None, fx=1, fy=1, interpolation=cv2.INTER_CUBIC)
+    wut = cv2.imread(name)
+    img = cv2.resize(wut, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_CUBIC)
     height, width, channels = img.shape
     # Split image into 3 two dimensional list
     blue_list, green_list, red_list = cv2.split(img)
@@ -133,6 +133,7 @@ def find_color(name):
     return final_image
 
 
+"""
 cam = cv2.VideoCapture(1)
 
 # cam.set(cv2.CAP_PROP_EXPOSURE, -4)
@@ -147,3 +148,11 @@ while True:
         break
 cam.release()
 cv2.destroyAllWindows()
+"""
+
+# calls the function and return stuff
+cv2.imshow("IMAGE2", find_color("../Test_Image/Cube2.jpg"))
+# cv2.imshow("IMAGE3", find_color("../Test_Image/Line3.jpg"))
+# cv2.imshow("IMAGE4", find_color("../Test_Image/Line4.jpg"))
+# cv2.imshow("IMAGE5", find_color("../Test_Image/Line5.jpg"))
+cv2.waitKey(0)

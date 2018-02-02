@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import glob
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(0)
 # cam.set(cv2.CAP_PROP_EXPOSURE, -4)
 
 """
