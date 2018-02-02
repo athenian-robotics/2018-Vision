@@ -7,4 +7,4 @@
 * CMake
 
 **How to run a C++ program (~~Because Donovan doesn't know how~~):**
-*1.  
+* 1.  
