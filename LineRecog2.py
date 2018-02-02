@@ -4,6 +4,7 @@ import math
 
 
 # TODO do some dope annotations
+# TODO rename bad variable names(repetitive in CubeRecog3.py
 
 def is_red(red, blue, green):
     green_high = red - 100
@@ -26,6 +27,7 @@ def contour_slope_degrees(contour, image, x, y):
     box = cv2.boxPoints(rect)
 
     print("CHECKPOINT1")
+    # find box of contours and assign them values
     point_lr = box[0]
     point_ul = box[2]
     point_ur = box[3]
@@ -47,9 +49,9 @@ def contour_slope_degrees(contour, image, x, y):
         degrees = 90
     else:
         # Non-vertical line
-        slope = delta_y // delta_x
+        slope = (delta_y // delta_x) *-1
         radians = math.atan(slope)
-        degrees = int(math.degrees(radians)) * -1
+        degrees = int(math.degrees(radians))
 
     cv2.circle(image, (point_lr[0], point_lr[1]), 7, (0, 255, 0), -1)
     cv2.circle(image, (point_ur[0], point_ur[1]), 7, (0, 255, 0), -1)
@@ -96,7 +98,7 @@ def find_line(name):
 
     mask = cv2.inRange(pImage, lower, upper)
 
-  # get contour and craps
+    # get contour and craps
     try:
         im2, contour, hierarchy = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnt = max(contour, key=cv2.contourArea)
@@ -118,7 +120,7 @@ def find_line(name):
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
         else:
             # Put words on image
-            cv2.putText(pImage, "NOT A LINE YOU ****", (cX - 25, cY - 25),
+            cv2.putText(pImage, "NOT A LINE YOU RETARD", (cX - 25, cY - 25),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 225), 2)
         slope, degrees = contour_slope_degrees(cnt, pImage, cX, cY)
         print("Slope: " + str(slope))
