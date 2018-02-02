@@ -65,7 +65,7 @@ def contour_slope_degrees(contour, image, x, y):
         degrees = 90
     else:
         # Non-vertical line
-        slope = (delta_y // delta_x) *-1
+        slope = (delta_y / delta_x) * -1
         radians = math.atan(slope)
         degrees = int(math.degrees(radians))
 
@@ -153,8 +153,10 @@ def find_line(name):
 
 
 # calls the function and return stuff
-cv2.imshow("IMAGE2", find_line("../Test_Image/Line2.jpg"))
-cv2.imshow("IMAGE3", find_line("../Test_Image/Line3.jpg"))
-cv2.imshow("IMAGE4", find_line("../Test_Image/Line4.jpg"))
-cv2.imshow("IMAGE5", find_line("../Test_Image/Line5.jpg"))
+# cv2.imshow("IMAGE2", find_line("../Test_Image/Line2.jpg"))
+# cv2.imshow("IMAGE3", find_line("../Test_Image/Line3.jpg"))
+# cv2.imshow("IMAGE4", find_line("../Test_Image/Line4.jpg"))
+# cv2.imshow("IMAGE5", find_line("../Test_Image/Line5.jpg"))
+
+cv2.imshow("IMAGE5", find_line("../Test_Image/ok.jpg"))
 cv2.waitKey(0)
