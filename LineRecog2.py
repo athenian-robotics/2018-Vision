@@ -6,6 +6,19 @@ import math
 # TODO do some dope annotations
 # TODO rename bad variable names(repetitive in CubeRecog3.py
 
+"""
+Filename: LineRecog2.py and CubeRecog3.py
+
+The program finds the line, and the slope & degrees of the line.
+Circuit: computer hooked up to a web-cam or the built-in camera
+Programmer: Donovan Zhong
+Date: February 2, 2018 
+Addition info including commits and pushes are in https://github.com/athenian-robotics/2018-Vision on github
+
+"""
+
+
+# check if a specific pixel is considered to be red
 def is_red(red, blue, green):
     green_high = red - 100
     blue_high = red - 100
@@ -16,12 +29,14 @@ def is_red(red, blue, green):
     return green_in_param and blue_in_param
 
 
+# calculates the distance of two points
 def distance(point1, point2):
     xsqr = (point2[0] - point1[0]) ** 2
     ysqr = (point2[1] - point1[1]) ** 2
     return int(math.sqrt(xsqr + ysqr))
 
 
+# finds the slope and the degrees of a line
 def contour_slope_degrees(contour, image, x, y):
     rect = cv2.minAreaRect(contour)
     box = cv2.boxPoints(rect)
@@ -35,6 +50,7 @@ def contour_slope_degrees(contour, image, x, y):
     line1 = distance(point_lr, point_ur)
     line2 = distance(point_ur, point_ul)
 
+    # determine width and height
     if line1 < line2:
         point_lr = box[1]
         point_ur = box[0]
@@ -53,6 +69,7 @@ def contour_slope_degrees(contour, image, x, y):
         radians = math.atan(slope)
         degrees = int(math.degrees(radians))
 
+    # putting all info on image
     cv2.circle(image, (point_lr[0], point_lr[1]), 7, (0, 255, 0), -1)
     cv2.circle(image, (point_ur[0], point_ur[1]), 7, (0, 255, 0), -1)
 
@@ -77,7 +94,7 @@ def find_line(name):
     print("height: " + str(height))
     print("width: " + str(width))
 
-    # loop through craps and return a merged image with black stuff
+    # loop through craps and calls on the function is_red()
     for z in range(width):
         for i in range(height):
 
@@ -90,6 +107,7 @@ def find_line(name):
                 blue_list[i][z] = 0
                 red_list[i][z] = 0
 
+    # pImage will be the processed image
     pImage = cv2.merge((blue_list, green_list, red_list))
 
     # find mask of the black stuff
@@ -134,6 +152,7 @@ def find_line(name):
     return wut
 
 
+# calls the function and return stuff
 cv2.imshow("IMAGE2", find_line("../Test_Image/Line2.jpg"))
 cv2.imshow("IMAGE3", find_line("../Test_Image/Line3.jpg"))
 cv2.imshow("IMAGE4", find_line("../Test_Image/Line4.jpg"))
