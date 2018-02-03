@@ -2,10 +2,11 @@ import cv2
 import numpy as np
 import glob
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(0)
 # cam.set(cv2.CAP_PROP_EXPOSURE, -4)
 
 """
+1/23/2018
 This is a temporary model that works...
 (Doesn't work that well)
 """
