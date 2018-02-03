@@ -106,7 +106,7 @@ cv::Mat CubeRecog::get_frame(cv::Mat frame) {
     cv::inRange(iso, lowerB, upperB, mask);
 
     std::vector<cv::Point> contour = find_largest_contour(mask);
-    if (contour.size() == 0) {
+    if (contour.empty()) {
         return frame;
     }
     cv::Point centroid = find_centroid(contour);
@@ -145,4 +145,29 @@ cv::Point CubeRecog::get_cube_center(cv::Mat frame) {
 
     std::vector<cv::Point> contour = find_largest_contour(mask);
     return find_centroid(contour);
+}
+
+CubeRecog::imgNpoint CubeRecog::get_both(cv::Mat frame) {
+    if (frame.cols != x_size || frame.rows != y_size) {
+        cv::resize(frame, frame, cv::Size(x_size, y_size));
+    }
+    imgNpoint ret;
+    cv::Mat iso = isolate_color(frame);
+    std::vector<int> lowerB(mask_l_bound, mask_l_bound + sizeof(mask_l_bound) / sizeof(mask_l_bound[0]));
+    std::vector<int> upperB(mask_u_bound, mask_u_bound + sizeof(mask_u_bound) / sizeof(mask_u_bound[0]));
+    cv::Mat mask;
+    cv::inRange(iso, lowerB, upperB, mask);
+    std::vector<cv::Point> contour = find_largest_contour(mask);
+    if (contour.empty()) {
+        return ret;
+    }
+    cv::Point centroid = find_centroid(contour);
+    cv::Rect bound_b = cv::boundingRect(contour);
+    cv::Mat processed;
+    frame.copyTo(processed);
+    cv::rectangle(processed, bound_b, cv::Scalar(0, 0, 255));
+    cv::circle(processed, centroid, 7, cv::Scalar(0, 0, 255), -1);
+    ret.img = processed;
+    ret.point = centroid;
+    return ret;
 }

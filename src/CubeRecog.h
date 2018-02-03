@@ -9,7 +9,14 @@
 #include <iostream>
 
 class CubeRecog {
+
+
 public:
+    struct imgNpoint {
+        cv::Mat img;
+        cv::Point point;
+    };
+
     CubeRecog(int x, int y);
 
     std::vector<cv::Point> find_largest_contour(cv::Mat frame);
@@ -22,6 +29,7 @@ public:
 
     cv::Point get_cube_center(cv::Mat frame);
 
+    imgNpoint get_both(cv::Mat frame);
 
 private:
     int x_size, y_size;

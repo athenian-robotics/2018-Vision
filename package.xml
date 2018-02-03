@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package>
+    <name>arc2018vision</name>
+    <version>0.0.1</version>
+    <description>Do some opencv stuff and transmit the data over ROS</description>
+    <maintainer email="jrmoffet@gmail.com">jrmo</maintainer>
+    <license>TODO</license>
+    <build_depend>roscpp</build_depend>
+    <run_depend>roscpp</run_depend>
+    <build_depend>geometry_msgs</build_depend>
+    <run_depend>geometry_msgs</run_depend>
+    <buildtool_depend>catkin</buildtool_depend>
+</package>
