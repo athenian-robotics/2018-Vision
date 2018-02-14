@@ -2,7 +2,7 @@
 <package>
     <name>arc2018vision</name>
     <version>0.0.1</version>
-    <description>Do some opencv stuff and transmit the data over ROS</description>
+    <description>Vision and related networking code for FRC team 852</description>
     <maintainer email="jrmoffet@gmail.com">jrmo</maintainer>
     <license>TODO</license>
     <build_depend>roscpp</build_depend>

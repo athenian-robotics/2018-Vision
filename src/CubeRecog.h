@@ -5,13 +5,21 @@
 #ifndef CUBERECOG_H
 #define CUBERECOG_H
 
-#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 #include <iostream>
 
 class CubeRecog {
 
 
 public:
+    struct Point{
+        double x;
+        double y;
+        double z;
+    };
+
     struct imgNpoint {
         cv::Mat img;
         cv::Point point;
@@ -27,7 +35,7 @@ public:
 
     cv::Mat get_frame(cv::Mat frame);
 
-    cv::Point get_cube_center(cv::Mat frame);
+    CubeRecog::Point get_cube_center(cv::Mat frame);
 
     imgNpoint get_both(cv::Mat frame);
 
