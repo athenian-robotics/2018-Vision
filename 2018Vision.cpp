@@ -3,6 +3,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Point.h>
 #include "src/CubeRecog.h"
+#include "src/PipeWriter.h"
 
 int main(int argc, char *argv[]) {
     cv::VideoCapture cap(1);
@@ -12,6 +13,7 @@ int main(int argc, char *argv[]) {
     }
 
     CubeRecog recog(640, 360);
+    PipeWriter writer((char *) ("/tmp/img"));
     // Setup to count the frame rate
     std::time_t startTime = std::time(0);
     int tick = 0;
@@ -27,7 +29,11 @@ int main(int argc, char *argv[]) {
     while (ros::ok()) {
         cv::Mat frame;
         cap >> frame;
-        CubeRecog::Point location = recog.get_cube_center(frame);
+        //CubeRecog::Point location = recog.get_cube_center(frame);
+        CubeRecog::imgNpoint data = recog.get_both(frame);
+        CubeRecog::Point location = data.point;
+        // Write the image to be displayed
+        writer.writeImg(data.img);
 
         geometry_msgs::Point point_msg;
         point_msg.x = location.x;
