@@ -15,6 +15,7 @@ to process (7-10 seconds)
 
 # TODO FIND MULTIPLE CONTOURS
 
+# TODO PUT DIRECTIONS ON 2018 ROBOTIC FRC
 
 def find_centroid(contour, img):
 

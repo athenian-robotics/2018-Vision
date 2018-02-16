@@ -6,17 +6,6 @@ import math
 # TODO do some dope annotations
 # TODO rename bad variable names(repetitive in CubeRecog3.py
 
-"""
-Filename: LineRecog2.py and CubeRecog3.py
-
-The program finds the line, and the slope & degrees of the line.
-Circuit: computer hooked up to a web-cam or the built-in camera
-Programmer: Donovan Zhong
-Date: February 2, 2018 
-Addition info including commits and pushes are in https://github.com/athenian-robotics/2018-Vision on github
-
-"""
-
 
 # check if a specific pixel is considered to be red
 def is_red(red, blue, green):
