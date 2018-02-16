@@ -168,6 +168,7 @@ CubeRecog::imgNpoint CubeRecog::get_both(cv::Mat frame) {
     std::vector<cv::Point> contour = find_largest_contour(mask);
 
     if (contour.empty()) {
+        ret.img = frame;
         return ret;
     }
 

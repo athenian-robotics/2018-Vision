@@ -8,6 +8,11 @@ class CubeRecog {
 
 public:
     struct Point{
+        Point(double x=-1, double y=-1, double z=-1){
+            this->x = x;
+            this->y = y;
+            this->z = z;
+        }
         double x;
         double y;
         double z;
