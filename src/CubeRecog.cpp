@@ -177,11 +177,17 @@ CubeRecog::imgNpoint CubeRecog::get_both(cv::Mat frame) {
     cv::Mat processed;
 
     frame.copyTo(processed);
+
+
     cv::rectangle(processed, bound_b, cv::Scalar(0, 0, 255));
     cv::circle(processed, centroid, 7, cv::Scalar(0, 0, 255), -1);
+    cv::circle(processed, (320, 240), 7, cv::Scalar(0, 255, 255), -1);
+
+    cv::line(processed, (305, 240), (335, 240), cv::Scalar(0,255,255), -1);
+
     ret.img = processed;
     ret.point.x = centroid.x;
     ret.point.y = centroid.y;
-    ret.point.z = cv::moments(contour).m00;
+    ret.point.z = centroid.z;
     return ret;
 }
