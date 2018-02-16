@@ -13,7 +13,7 @@ public:
 
 private:
     int fifo_handle;
-    char *pipe;
+    char *pipeName;
     char *enc_type;
     std::vector<uchar> buffer;
     std::vector<int> params;

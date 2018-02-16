@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv) {
     std::string fifo_file = "/tmp/img";
-    std::cout << "Starting" << std::endl;
+    std::cout << cv::getBuildInformation() << std::endl;
     int fifo_handle;
 
     cv::VideoCapture cap(1);
@@ -20,15 +20,16 @@ int main(int argc, char **argv) {
     for (;;) {
 
         if ((fifo_handle = open(fifo_file.c_str(), O_WRONLY)) < 0) {
-            std::cerr << "FATAL ERROR: Failed to open fifo pipe, exiting" << std::endl;
+            std::cerr << "FATAL ERROR: Failed to open fifo pipeName, exiting" << std::endl;
             return -1;
         }
         cap >> frame;
         cv::imencode(".jpg", frame, buffer, param);
         if (write(fifo_handle, buffer.data(), buffer.size()) < 0) {
-            std::cerr << "ERROR: Failed to write to pipe" << std::endl;
+            std::cerr << "ERROR: Failed to write to pipeName" << std::endl;
         }
         close(fifo_handle);
         cv::waitKey(1);
     }
+    std::cout << "SOMETHING WENT WRONG" << std::endl;
 }

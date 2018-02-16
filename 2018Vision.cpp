@@ -14,9 +14,6 @@ int main(int argc, char *argv[]) {
 
     CubeRecog recog(640, 360);
     PipeWriter writer((char *) ("/tmp/img"));
-    // Setup to count the frame rate
-    std::time_t startTime = std::time(0);
-    int tick = 0;
     // Setup ROS stuff
     // Must call ros::init before doing anything else with ROS
     ros::init(argc, argv, "cube_finder");

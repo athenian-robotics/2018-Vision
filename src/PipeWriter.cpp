@@ -1,8 +1,8 @@
 #include "PipeWriter.h"
 
 PipeWriter::PipeWriter(char *pipe, char *enc_type, std::vector<int> params) {
-    // Gonna assume that the pipe exists, as it should be created by the reader
-    this->pipe = pipe;
+    // Gonna assume that the pipeName exists, as it should be created by the reader
+    this->pipeName = pipe;
     this->enc_type = enc_type;
     if (!params.empty()) {
         this->params = std::vector<int>(2);
@@ -14,7 +14,7 @@ PipeWriter::PipeWriter(char *pipe, char *enc_type, std::vector<int> params) {
 }
 
 void PipeWriter::writeImg(cv::Mat frame) {
-    if ((fifo_handle = open(this->pipe, O_WRONLY)) < 0) {
+    if ((fifo_handle = open(this->pipeName, O_WRONLY)) < 0) {
         exit(-1);
     }
     cv::imencode(this->enc_type, frame, this->buffer, this->params);
