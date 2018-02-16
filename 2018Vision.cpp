@@ -6,7 +6,7 @@
 #include "src/PipeWriter.h"
 
 int main(int argc, char *argv[]) {
-    cv::VideoCapture cap(1);
+    cv::VideoCapture cap(0);
     if (!cap.isOpened()) {
         std::cout << "BORK" << std::endl;
         return -1;
