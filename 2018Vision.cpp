@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     ros::Publisher cube_publisher = handle.advertise<geometry_msgs::Point>("cube", 0);
     ros::Publisher frame_time_pub = handle.advertise<std_msgs::String>("frame_time", 0);
     // Send data at a max of 15hz so we don't flood the server
-    ros::Rate loop_rate(15);
+    ros::Rate loop_rate(30);
 
     while (ros::ok()) {
         start = std::clock();
