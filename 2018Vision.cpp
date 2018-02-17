@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     // Create a publisher with a message queue of 1 -> just blast over the network
     ros::Publisher publisher = handle.advertise<geometry_msgs::Point>("cube", 1);
     // Send data at a max of 15hz so we don't flood the server
-    ros::Rate loop_rate(15);
+    ros::Rate loop_rate(20);
 
     while (ros::ok()) {
         cv::Mat frame;
