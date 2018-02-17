@@ -44,6 +44,10 @@ cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
                 p_blue[x] = 0;
                 p_green[x] = 0;
                 p_red[x] = 0;
+            } else {
+                p_blue[x] = 255;
+                p_green[x] = 255;
+                p_red[x] = 255;
             }
         }
     }
@@ -141,10 +145,8 @@ CubeRecog::Point CubeRecog::get_cube_center(cv::Mat frame) {
     cv::Mat iso = isolate_color(frame);
     std::vector<int> lowerB(mask_l_bound, mask_l_bound + sizeof(mask_l_bound) / sizeof(mask_l_bound[0]));
     std::vector<int> upperB(mask_u_bound, mask_u_bound + sizeof(mask_u_bound) / sizeof(mask_u_bound[0]));
-    cv::Mat mask;
-    cv::inRange(iso, lowerB, upperB, mask);
 
-    std::vector<cv::Point> contour = find_largest_contour(mask);
+    std::vector<cv::Point> contour = find_largest_contour(iso);
     Point centerNsize;
     cv::Point tmp = find_centroid(contour);
     centerNsize.x = tmp.x;
