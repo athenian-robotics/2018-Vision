@@ -24,18 +24,18 @@ int main(int argc, char *argv[]) {
     ros::Publisher cube_publisher = handle.advertise<geometry_msgs::Point>("cube", 0);
     ros::Publisher frame_time_pub = handle.advertise<std_msgs::String>("frame_time", 0);
     // Send data at a max of 15hz so we don't flood the server
-    ros::Rate loop_rate(30);
+    ros::Rate loop_rate(15);
 
     while (ros::ok()) {
         start = std::clock();
         cv::Mat frame;
         cap >> frame;
 //        CubeRecog::imgNpoint data = recog.get_both(frame);
-//        CubeRecog::Point location = data.point;
-//        Write the image to be displayed
-//        writer.writeImg(data.img);
-
         CubeRecog::Point location = recog.get_cube_center(frame);
+
+        // Write the image to be displayed
+  //      writer.writeImg(data.img);
+
         geometry_msgs::Point point_msg;
         point_msg.x = location.x;
         point_msg.y = location.y;
