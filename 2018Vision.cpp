@@ -28,13 +28,14 @@ int main(int argc, char *argv[]) {
 
     while (ros::ok()) {
         start = std::clock();
+        start = std::clock();
         cv::Mat frame;
         cap >> frame;
-//        CubeRecog::imgNpoint data = recog.get_both(frame);
+        //CubeRecog::imgNpoint data = recog.get_both(frame);
         CubeRecog::Point location = recog.get_cube_center(frame);
 
         // Write the image to be displayed
-  //      writer.writeImg(data.img);
+        //writer.writeImg(data.img);
 
         geometry_msgs::Point point_msg;
         point_msg.x = location.x;
