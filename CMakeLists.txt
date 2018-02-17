@@ -7,13 +7,13 @@ project(arc2018vision)
 
 find_package(OpenCV REQUIRED)
 
-find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs std_msgs)
 catkin_package()
 include_directories(${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 set(LIBS ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
-set(RECOG src/CubeRecog.cpp src/CubeRecog.h)
+set(RECOG src/CubeRecog.cpp src/CubeRecog.h src/LineRecog.cpp src/LineRecog.h)
 set(PIPES src/PipeWriter.cpp src/PipeWriter.h)
 set(SRC 2018Vision.cpp ${RECOG} ${PIPES})
 
