@@ -178,7 +178,6 @@ CubeRecog::imgNpoint CubeRecog::get_both(cv::Mat frame) {
 
     frame.copyTo(processed);
 
-
     cv::rectangle(processed, bound_b, cv::Scalar(0, 0, 255));
     cv::circle(processed, centroid, 7, cv::Scalar(0, 0, 255), -1);
     cv::circle(processed, (320, 240), 7, cv::Scalar(0, 255, 255), -1);
