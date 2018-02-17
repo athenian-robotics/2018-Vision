@@ -15,7 +15,8 @@ class LineRecog {
     };
 
 public:
-    std::vector<cv::Point> find_line_contour(cv::Mat frame);
+    std::vector<cv::Point> get_angle(cv::Mat frame);
 private:
     bool isColor(std::vector<int> in, int primaryIdx, std::vector<float> ratios);
+    double distance(cv::Point p1, cv::Point p2);
 };

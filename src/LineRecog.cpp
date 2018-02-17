@@ -4,6 +4,11 @@ bool LineRecog::isColor(std::vector<int> in, int primaryIdx, std::vector<float> 
     return false;
 }
 
-std::vector<cv::Point> LineRecog::find_line_contour(cv::Mat frame) {
+std::vector<cv::Point> LineRecog::get_angle(cv::Mat frame) {
     return std::vector<cv::Point>();
 }
+
+double LineRecog::distance(cv::Point p1, cv::Point p2) {
+    return 0;
+}
+
