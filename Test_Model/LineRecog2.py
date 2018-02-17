@@ -6,6 +6,7 @@ import math
 # TODO do some dope annotations
 # TODO rename bad variable names(repetitive in CubeRecog3.py
 
+
 # check if a specific pixel is considered to be red
 def is_red(red, blue, green):
     green_high = red - 100
