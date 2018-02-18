@@ -73,7 +73,7 @@ std::vector<cv::Point> CubeRecog::find_largest_contour(cv::Mat frame) {
     }
 
     // To increase the likely hood that we are looking at a cube, enforce a minimum size
-    if (largest_area < 20) {
+    if (largest_area < 200) {
         std::vector<cv::Point> tooSmol;
         return tooSmol;
     }
