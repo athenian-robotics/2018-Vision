@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) {
         std::cout << time_msg_data.str() << std::endl;
         loop_rate.sleep();
         cv::imshow("Camera", data.img);
+        if(cv::waitKey(1) == 27)
+            break;
     }
 
     cv::destroyAllWindows();
