@@ -154,11 +154,11 @@ CubeRecog::imgNpoint CubeRecog::get_marked_frame(cv::Mat frame) {
     imgNpoint ret;
 
     cv::Mat iso = isolate_color(frame);
-    std::vector<int> lowerB(mask_l_bound, mask_l_bound + sizeof(mask_l_bound) / sizeof(mask_l_bound[0]));
-    std::vector<int> upperB(mask_u_bound, mask_u_bound + sizeof(mask_u_bound) / sizeof(mask_u_bound[0]));
-    cv::Mat mask;
-    cv::inRange(iso, lowerB, upperB, mask);
-    std::vector<cv::Point> contour = find_largest_contour(mask);
+//    std::vector<int> lowerB(mask_l_bound, mask_l_bound + sizeof(mask_l_bound) / sizeof(mask_l_bound[0]));
+//    std::vector<int> upperB(mask_u_bound, mask_u_bound + sizeof(mask_u_bound) / sizeof(mask_u_bound[0]));
+//    cv::Mat mask;
+//    cv::inRange(iso, lowerB, upperB, mask);
+    std::vector<cv::Point> contour = find_largest_contour(iso);
 
     if (contour.empty()) {
         ret.img = frame;

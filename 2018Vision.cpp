@@ -9,7 +9,8 @@
 #include "src/PipeWriter.h"
 
 int main(int argc, char *argv[]) {
-    cv::VideoCapture cap(1);
+    // TODO CHANGE BACK TO 0 BEFORE COMMIT
+    cv::VideoCapture cap(0);
     if (!cap.isOpened()) {
         std::cout << "BORK" << std::endl;
         return -1;
