@@ -17,6 +17,12 @@ public:
         double y;
         double z;
     };
+    //TODO REMOVE FROM ROBIT CODE
+    struct DEBUGSTRUCT{
+        cv::Mat a;
+        cv::Mat b;
+        Point point;
+    };
 
     struct imgNpoint {
         cv::Mat img;
@@ -33,14 +39,12 @@ public:
 
     CubeRecog::Point get_cube_center(cv::Mat frame);
 
-    imgNpoint get_marked_frame(cv::Mat frame);
+    DEBUGSTRUCT debug_func(cv::Mat frame);
 
 private:
     int x_size, y_size;
 
     int abs(int x);
-
-    int safeDiv(int num, int denom);
 
     double safeDiv(double num, double denom);
 

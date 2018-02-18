@@ -1,30 +1,5 @@
 #include "CubeRecog.h"
 
-// TODO  remove before committing
-std::string fuk(int type) {
-    std::string r;
-
-    uchar depth = type & CV_MAT_DEPTH_MASK;
-    uchar chans = 1 + (type >> CV_CN_SHIFT);
-
-    switch ( depth ) {
-        case CV_8U:  r = "8U"; break;
-        case CV_8S:  r = "8S"; break;
-        case CV_16U: r = "16U"; break;
-        case CV_16S: r = "16S"; break;
-        case CV_32S: r = "32S"; break;
-        case CV_32F: r = "32F"; break;
-        case CV_64F: r = "64F"; break;
-        default:     r = "User"; break;
-    }
-
-    r += "C";
-    r += (chans+'0');
-
-    return r;
-}
-
-
 CubeRecog::CubeRecog(int x, int y) {
     x_size = x;
     y_size = y;
@@ -147,11 +122,11 @@ CubeRecog::Point CubeRecog::get_cube_center(cv::Mat frame) {
     return centerNsize;
 }
 
-CubeRecog::imgNpoint CubeRecog::get_marked_frame(cv::Mat frame) {
+CubeRecog::DEBUGSTRUCT CubeRecog::debug_func(cv::Mat frame) {
     if (frame.cols != x_size || frame.rows != y_size) {
         cv::resize(frame, frame, cv::Size(x_size, y_size));
     }
-    imgNpoint ret;
+    DEBUGSTRUCT ret;
 
     cv::Mat iso = isolate_color(frame);
 //    std::vector<int> lowerB(mask_l_bound, mask_l_bound + sizeof(mask_l_bound) / sizeof(mask_l_bound[0]));
@@ -161,8 +136,8 @@ CubeRecog::imgNpoint CubeRecog::get_marked_frame(cv::Mat frame) {
     std::vector<cv::Point> contour = find_largest_contour(iso);
 
     if (contour.empty()) {
-        ret.img = frame;
-        std::cout << "FUCK" << std::endl;
+        ret.a = frame;
+        ret.b = iso;
         return ret;
     }
 
@@ -175,7 +150,8 @@ CubeRecog::imgNpoint CubeRecog::get_marked_frame(cv::Mat frame) {
     cv::rectangle(processed, bound_b, cv::Scalar(0, 0, 255));
     cv::circle(processed, centroid, 7, cv::Scalar(0, 0, 255), -1);
 
-    ret.img = processed;
+    ret.a = processed;
+    ret.b = iso;
     ret.point.x = centroid.x;
     ret.point.y = centroid.y;
     ret.point.z = cv::moments(contour).m00;

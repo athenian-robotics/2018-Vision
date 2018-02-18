@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         start = std::clock();
         cv::Mat frame;
         cap >> frame;
-        CubeRecog::imgNpoint data = recog.get_marked_frame(frame);
+        CubeRecog::DEBUGSTRUCT data = recog.debug_func(frame);
         CubeRecog::Point location = data.point;
         //CubeRecog::Point location = recog.get_cube_center(frame);
         // Write the image to be displayed
@@ -52,7 +52,8 @@ int main(int argc, char *argv[]) {
         frame_time_pub.publish(proc_time_msg);
         loop_rate.sleep();
 
-        cv::imshow("Camera", data.img);
+        cv::imshow("PROC", data.a);
+        cv::imshow("ISO", data.b);
         if(cv::waitKey(1) == 27)
             break;
     }
