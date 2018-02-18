@@ -32,7 +32,7 @@ CubeRecog::CubeRecog(int x, int y) {
 
 cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
     // Remember that opencv uses BGR
-    cv::Mat ret(frame.cols, frame.rows, CV_8UC1);
+    cv::Mat ret(frame.rows, frame.cols, CV_8UC1);
     std::vector<cv::Mat> chanz;
     cv::split(frame, chanz);
     cv::Mat blue_chan = chanz[0];
@@ -162,6 +162,7 @@ CubeRecog::imgNpoint CubeRecog::get_marked_frame(cv::Mat frame) {
 
     if (contour.empty()) {
         ret.img = frame;
+        std::cout << "FUCK" << std::endl;
         return ret;
     }
 

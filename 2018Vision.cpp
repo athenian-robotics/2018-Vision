@@ -50,8 +50,8 @@ int main(int argc, char *argv[]) {
         proc_time_msg.data = time_msg_data.str();
         cube_publisher.publish(point_msg);
         frame_time_pub.publish(proc_time_msg);
-        std::cout << time_msg_data.str() << std::endl;
         loop_rate.sleep();
+
         cv::imshow("Camera", data.img);
         if(cv::waitKey(1) == 27)
             break;
