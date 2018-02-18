@@ -31,11 +31,9 @@ public:
 
     cv::Mat isolate_color(cv::Mat frame);
 
-    cv::Mat get_frame(cv::Mat frame);
-
     CubeRecog::Point get_cube_center(cv::Mat frame);
 
-    imgNpoint get_both(cv::Mat frame);
+    imgNpoint get_marked_frame(cv::Mat frame);
 
 private:
     int x_size, y_size;

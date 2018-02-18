@@ -32,10 +32,11 @@ int main(int argc, char *argv[]) {
         start = std::clock();
         cv::Mat frame;
         cap >> frame;
-//        CubeRecog::imgNpoint data = recog.get_both(frame);
-        CubeRecog::Point location = recog.get_cube_center(frame);
+        CubeRecog::imgNpoint data = recog.get_marked_frame(frame);
+        CubeRecog::Point location = data.point;
+        //CubeRecog::Point location = recog.get_cube_center(frame);
         // Write the image to be displayed
-        //      writer.writeImg(data.img);
+        //writer.writeImg(data.img);
 
         geometry_msgs::Point point_msg;
         point_msg.x = location.x;
@@ -50,6 +51,7 @@ int main(int argc, char *argv[]) {
         frame_time_pub.publish(proc_time_msg);
         std::cout << time_msg_data.str() << std::endl;
         loop_rate.sleep();
+        cv::imshow("Camera", data.img);
     }
 
     cv::destroyAllWindows();
