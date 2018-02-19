@@ -7,6 +7,7 @@ class CubeRecog {
 
 
 public:
+    // Let us return the data from a cv::Point, plus janky distance from the size of the contour
     struct Point{
         explicit Point(double x=-1, double y=-1, double z=-1){
             this->x = x;
@@ -17,15 +18,10 @@ public:
         double y;
         double z;
     };
-    //TODO REMOVE FROM ROBIT CODE
+    // Is what is named
     struct DEBUGSTRUCT{
         cv::Mat a;
         cv::Mat b;
-        Point point;
-    };
-
-    struct imgNpoint {
-        cv::Mat img;
         Point point;
     };
 

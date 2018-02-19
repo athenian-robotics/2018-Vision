@@ -29,7 +29,10 @@ int main(int argc, char **argv) {
             std::cerr << "ERROR: Failed to write to pipeName" << std::endl;
         }
         close(fifo_handle);
-        cv::waitKey(1);
+        if(cv::waitKey(1)==27){
+            break;
+        }
     }
     std::cout << "SOMETHING WENT WRONG" << std::endl;
+    cap.release();
 }

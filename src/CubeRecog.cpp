@@ -4,10 +4,12 @@ CubeRecog::CubeRecog(int x, int y) {
     x_size = x;
     y_size = y;
 }
-
+// Like cv::inRange, but also looks at the relationships between each R,G,B value (make sure that it is yellow)
 cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
     // Remember that opencv uses BGR
+    // Other stuff wants a single channel mat, lets make it ourselves
     cv::Mat ret(frame.rows, frame.cols, CV_8UC1);
+    // Lets look at each individual channel
     std::vector<cv::Mat> chanz;
     cv::split(frame, chanz);
     cv::Mat blue_chan = chanz[0];
@@ -15,7 +17,7 @@ cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
     cv::Mat red_chan = chanz[2];
     int nRows = blue_chan.rows;
     int nCols = blue_chan.cols;
-
+    // These will be pointers to a row
     uchar *og_blue, *og_green, *og_red, *ret_mono;
     int red, green, blue, g_low, g_high, diff, sim;
     bool green_in_bound, is_yellow, is_grey;
@@ -28,7 +30,6 @@ cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
             blue = og_blue[x];
             green = og_green[x];
             red = og_red[x];
-
             // Set the green high and low in relation to the red
             g_low = red - 30;
             g_high = red + 18;
@@ -39,7 +40,7 @@ cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
             green_in_bound = g_low <= green && green <= g_high;
             is_yellow = diff >= 55;
             is_grey = sim <= 30;
-
+            // Actually write the data now
             if (!green_in_bound || !is_yellow || is_grey) {
                 ret_mono[x] = 0;
             } else {
@@ -47,7 +48,6 @@ cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
             }
         }
     }
-
     return ret;
 }
 
@@ -72,18 +72,19 @@ std::vector<cv::Point> CubeRecog::find_largest_contour(cv::Mat frame) {
         }
     }
 
-    // To increase the likely hood that we are looking at a cube, enforce a minimum size
+    // To increase the likelihood that we are looking at a cube, enforce a minimum size
     if (largest_area < 200) {
         std::vector<cv::Point> tooSmol;
         return tooSmol;
     }
     return contours[largest_idx];
 }
-
+// Return where we think the center of the cube is
 cv::Point CubeRecog::find_centroid(std::vector<cv::Point> contour) {
     cv::Moments M = cv::moments(contour);
     int cX;
     int cY;
+    // Lets not blowup
     try {
         cX = int(safeDiv(M.m10, M.m00));
         cY = int(safeDiv(M.m01, M.m00));
@@ -92,17 +93,13 @@ cv::Point CubeRecog::find_centroid(std::vector<cv::Point> contour) {
     }
     return cv::Point(cX, cY);
 }
-
-int CubeRecog::abs(int x) {
-    return x > 0 ? x : -x;
-}
-
+// make sure we don't divide by 0 and die
 double CubeRecog::safeDiv(double num, double denom) {
     if (denom == 0)
         throw std::overflow_error("Divide by zero error");
     return num / denom;
 }
-
+// The main usage for this class
 CubeRecog::Point CubeRecog::get_cube_center(cv::Mat frame) {
     if (frame.cols != x_size || frame.rows != y_size) {
         cv::resize(frame, frame, cv::Size(x_size, y_size));
@@ -122,6 +119,7 @@ CubeRecog::Point CubeRecog::get_cube_center(cv::Mat frame) {
     return centerNsize;
 }
 
+// This is just a method for debuging, it does everyting that the one above does, but it can return two cv::Mats
 CubeRecog::DEBUGSTRUCT CubeRecog::debug_func(cv::Mat frame) {
     if (frame.cols != x_size || frame.rows != y_size) {
         cv::resize(frame, frame, cv::Size(x_size, y_size));
@@ -156,4 +154,8 @@ CubeRecog::DEBUGSTRUCT CubeRecog::debug_func(cv::Mat frame) {
     ret.point.y = centroid.y;
     ret.point.z = cv::moments(contour).m00;
     return ret;
+}
+
+int CubeRecog::abs(int x) {
+    return x > 0 ? x : -x;
 }

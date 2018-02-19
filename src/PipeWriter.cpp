@@ -13,13 +13,14 @@ PipeWriter::PipeWriter(char *pipe, char *enc_type, std::vector<int> params) {
         this->params = params;
     }
 }
-
+// Writes to a named pipe (FIFO) to allow us to possibly display video
 void PipeWriter::writeImg(cv::Mat frame) {
     // Downsize so we don't crush the network
     cv::resize(frame, frame, cv::Size(320, 240));
     if ((fifo_handle = open(this->pipeName, O_WRONLY)) < 0) {
         exit(-1);
     }
+    // create a jpg so we don't kill the server with data
     cv::imencode(this->enc_type, frame, this->buffer, this->params);
     if (write(fifo_handle, buffer.data(), buffer.size()) < 0) {
         std::cerr << "ERROR FAILED TO WRITE TO PIPE" << std::endl;
