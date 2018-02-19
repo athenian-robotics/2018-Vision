@@ -33,9 +33,10 @@ int main(int argc, char *argv[]) {
         start = std::clock();
         cv::Mat frame;
         cap >> frame;
-        CubeRecog::DEBUGSTRUCT data = recog.debug_func(frame);
-        CubeRecog::Point location = data.point;
-        //CubeRecog::Point location = recog.get_cube_center(frame);
+
+        // CubeRecog::DEBUGSTRUCT data = recog.debug_func(frame);
+        CubeRecog::Point location = recog.get_cube_center(frame);
+
         // Write the image to be displayed
         //writer.writeImg(data.img);
 
@@ -43,19 +44,17 @@ int main(int argc, char *argv[]) {
         point_msg.x = location.x;
         point_msg.y = location.y;
         point_msg.z = location.z;
+
         std_msgs::String proc_time_msg;
         std::stringstream time_msg_data;
         double end = std::clock();
         time_msg_data << (end - start) / (double) CLOCKS_PER_SEC * 1000 << " ms";
         proc_time_msg.data = time_msg_data.str();
+
         cube_publisher.publish(point_msg);
         frame_time_pub.publish(proc_time_msg);
-        loop_rate.sleep();
 
-        cv::imshow("PROC", data.a);
-        cv::imshow("ISO", data.b);
-        if(cv::waitKey(1) == 27)
-            break;
+        loop_rate.sleep();
     }
 
     cv::destroyAllWindows();
