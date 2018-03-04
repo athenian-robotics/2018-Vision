@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
         cap >> frame;
 
         // CubeRecog::DEBUGSTRUCT data = recog.debug_func(frame);
-        CubeRecog::Point location = recog.get_cube_center(frame);
+        Point3d location = recog.get_cube_loc(frame);
         // This bit is under review
         // Write the image to be displayed
         // writer.writeImg(data.img);
