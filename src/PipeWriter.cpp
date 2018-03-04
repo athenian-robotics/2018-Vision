@@ -1,5 +1,5 @@
 #include <opencv2/imgproc.hpp>
-#include "PipeWriter.h"
+#include "../include/PipeWriter.h"
 
 PipeWriter::PipeWriter(char *pipe, char *enc_type, std::vector<int> params) {
     // Gonna assume that the pipeName exists, as it should be created by the reader

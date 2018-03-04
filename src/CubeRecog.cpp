@@ -1,57 +1,86 @@
-#include "CubeRecog.h"
+#include "../include/CubeRecog.h"
+// This will need to change
+#define THRESH 5.5
+#define THRESH_CO 1.25
 
 CubeRecog::CubeRecog(int x, int y) {
-    x_size = x;
-    y_size = y;
+    this->x_size = x;
+    this->y_size = y;
 }
-// Like cv::inRange, but also looks at the relationships between each R,G,B value (make sure that it is yellow)
-cv::Mat CubeRecog::isolate_color(cv::Mat frame) {
-    // Remember that opencv uses BGR
-    // Other stuff wants a single channel mat, lets make it ourselves
+
+cv::Mat CubeRecog::isolateSeparated(cv::Mat frame) {
+    int nRows = frame.rows, nCols = frame.cols;
+    // Remember that OpenCV uses BGR
+    // OpenCV contour stuff wants a single channel mat, so lets do it ourselves
     cv::Mat ret(frame.rows, frame.cols, CV_8UC1);
-    // Lets look at each individual channel
     std::vector<cv::Mat> chanz;
+    // Lets us look at each individual channel
+    // Split into rgb channels so we don't have to mess with the stride of the original image
     cv::split(frame, chanz);
     cv::Mat blue_chan = chanz[0];
     cv::Mat green_chan = chanz[1];
     cv::Mat red_chan = chanz[2];
-    int nRows = blue_chan.rows;
-    int nCols = blue_chan.cols;
-    // These will be pointers to a row
-    uchar *og_blue, *og_green, *og_red, *ret_mono;
-    int red, green, blue, g_low, g_high, diff, sim;
-    bool green_in_bound, is_yellow, is_grey;
+
+    uchar *bluRow, *greenRow, *redRow, *nextBluRow, *nextGreenRow, *nextRedRow;
+    uchar *returnRow;
+    // Convenient for holding 3 numbers, x,y&z or B,G&R
+    Point3d a, b, c;
     for (int y = 0; y < nRows; ++y) {
-        og_blue = blue_chan.ptr<uchar>(y);
-        og_green = green_chan.ptr<uchar>(y);
-        og_red = red_chan.ptr<uchar>(y);
-        ret_mono = ret.ptr<uchar>(y);
+        // Get the row we're gonna write to
+        returnRow = ret.ptr<uchar>(y);
+        // Get the  current rows
+        bluRow = blue_chan.ptr<uchar>(y);
+        greenRow = green_chan.ptr<uchar>(y);
+        redRow = red_chan.ptr<uchar>(y);
+        // Get the next row (the prev row if we're looking at the last one already)
+        nextBluRow = blue_chan.ptr<uchar>(y != nRows - 1 ? y + 1 : y - 1);
+        nextGreenRow = green_chan.ptr<uchar>(y != nRows - 1 ? y + 1 : y - 1);
+        nextRedRow = red_chan.ptr<uchar>(y != nRows - 1 ? y + 1 : y - 1);
         for (int x = 0; x < nCols; ++x) {
-            blue = og_blue[x];
-            green = og_green[x];
-            red = og_red[x];
-            // Set the green high and low in relation to the red
-            g_low = red - 30;
-            g_high = red + 18;
-            // Avg of green and red - blue = make sure that there isn't too much blue
-            diff = (green + red) / 2 - blue;
-            // Used to exclude grey, white and black pixels
-            sim = abs(green - red) + abs(red - blue) + abs(green - blue);
-            green_in_bound = g_low <= green && green <= g_high;
-            is_yellow = diff >= 55;
-            is_grey = sim <= 30;
-            // Actually write the data now
-            if (!green_in_bound || !is_yellow || is_grey) {
-                ret_mono[x] = 0;
-            } else {
-                ret_mono[x] = 255;
-            }
+            // The main pixel that we're working on right now
+            a.x = bluRow[x];
+            a.y = greenRow[x];
+            a.z = redRow[x];
+            // The pixel to the right (or the one to the left if we're looking at the right most)
+            b.x = bluRow[x != nCols - 1 ? x + 1 : x - 1];
+            b.y = greenRow[x != nCols - 1 ? x + 1 : x - 1];
+            b.z = redRow[x != nCols - 1 ? x + 1 : x - 1];
+            // The pixel below us (again, if we're looking at one in bottom row, the the one immediately above us)
+            c.x = nextBluRow[x];
+            c.y = nextGreenRow[x];
+            c.z = nextRedRow[x];
+            // 255 == white, 0 == black
+            if (!isEdge(a, b, c) && isColor(a.x, a.y, a.z))
+                returnRow[x] = 0xFF;
+            else
+                returnRow[x] = 0x00;
         }
     }
+
     return ret;
 }
 
-std::vector<cv::Point> CubeRecog::find_largest_contour(cv::Mat frame) {
+Point3d CubeRecog::find_centroid(std::vector<cv::Point> contour) {
+    Point3d ret;
+    cv::Moments M = cv::moments(contour);
+    int cX;
+    int cY;
+    // Lets not blowup
+    try {
+        cX = int(safeDiv(M.m10, M.m00));
+        cY = int(safeDiv(M.m01, M.m00));
+    } catch (std::overflow_error e) {
+        // Point3d inits to all -1
+        return ret;
+    }
+    cv::Rect bound_b = cv::boundingRect(contour);
+    ret.x = cX;
+    ret.y = cY;
+    ret.z = bound_b.area();
+    return ret;
+}
+
+std::vector<cv::Point> CubeRecog::find_closest_cube(cv::Mat frame) {
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
 
@@ -62,100 +91,85 @@ std::vector<cv::Point> CubeRecog::find_largest_contour(cv::Mat frame) {
         return noCube;
     }
     cv::Moments M;
+    cv::Rect bBox;
     double largest_area = 0;
-    int largest_idx = 0;
+    int largest_idx = -1;
     for (int i = 0; i < contours.size(); ++i) {
         M = cv::moments(contours[i]);
+        bBox = cv::boundingRect(contours[i]);
+        if (!isCubeLike(bBox))
+            continue;
         if (M.m00 > largest_area) {
             largest_area = M.m00;
             largest_idx = i;
         }
     }
-
-    // To increase the likelihood that we are looking at a cube, enforce a minimum size
-    if (largest_area < 200) {
-        std::vector<cv::Point> tooSmol;
-        return tooSmol;
-    }
     return contours[largest_idx];
 }
-// Return where we think the center of the cube is
-cv::Point CubeRecog::find_centroid(std::vector<cv::Point> contour) {
-    cv::Moments M = cv::moments(contour);
-    int cX;
-    int cY;
-    // Lets not blowup
-    try {
-        cX = int(safeDiv(M.m10, M.m00));
-        cY = int(safeDiv(M.m01, M.m00));
-    } catch (std::overflow_error e) {
-        return cv::Point(-1, -1);
-    }
-    return cv::Point(cX, cY);
+
+Point3d CubeRecog::get_cube_loc(cv::Mat frame) {
+    cv::Mat iso = isolateSeparated(frame);
+    std::vector<cv::Point> cont = find_closest_cube(iso);
+    if (cont.empty())
+        return Point3d();
+    return find_centroid(cont);
 }
-// make sure we don't divide by 0 and die
+
+DEBUGSTRUCT CubeRecog::debug_fun(cv::Mat frame) {
+    DEBUGSTRUCT ret;
+    cv::Mat iso = isolateSeparated(frame);
+    std::vector<cv::Point> cont = find_closest_cube(iso);
+    Point3d loc = find_centroid(cont);
+    cv::rectangle(frame, cv::boundingRect(cont), cv::Scalar(0, 0, 255));
+    cv::circle(frame, cv::Point(loc.x, loc.y), 7, cv::Scalar(0, 0, 255), -1);
+    ret.a = frame;
+    ret.b = iso;
+    ret.loc = loc;
+    return ret;
+}
+
+/*** PRIVATE FUNCTIONS ***/
+double CubeRecog::abs(double x) {
+    return x > 0 ? x : -x;
+}
+
 double CubeRecog::safeDiv(double num, double denom) {
     if (denom == 0)
         throw std::overflow_error("Divide by zero error");
     return num / denom;
 }
-// The main usage for this class
-CubeRecog::Point CubeRecog::get_cube_center(cv::Mat frame) {
-    if (frame.cols != x_size || frame.rows != y_size) {
-        cv::resize(frame, frame, cv::Size(x_size, y_size));
-    }
 
-    // Get a black and white image, with the white being yellow and the black being everything else
-    cv::Mat iso = isolate_color(frame);
-    std::vector<int> lowerB(mask_l_bound, mask_l_bound + sizeof(mask_l_bound) / sizeof(mask_l_bound[0]));
-    std::vector<int> upperB(mask_u_bound, mask_u_bound + sizeof(mask_u_bound) / sizeof(mask_u_bound[0]));
-
-    std::vector<cv::Point> contour = find_largest_contour(iso);
-    Point centerNsize;
-    cv::Point tmp = find_centroid(contour);
-    centerNsize.x = tmp.x;
-    centerNsize.y = tmp.y;
-    centerNsize.z = cv::moments(contour).m00;
-    return centerNsize;
+double CubeRecog::dist3d(Point3d a, Point3d b) {
+    double xD = a.x - b.x, yD = a.y - b.y, zD = a.z - b.z;
+    return sqrt((xD * xD) + (yD * yD) + (zD * zD));
 }
 
-// This is just a method for debuging, it does everyting that the one above does, but it can return two cv::Mats
-CubeRecog::DEBUGSTRUCT CubeRecog::debug_func(cv::Mat frame) {
-    if (frame.cols != x_size || frame.rows != y_size) {
-        cv::resize(frame, frame, cv::Size(x_size, y_size));
-    }
-    DEBUGSTRUCT ret;
-
-    cv::Mat iso = isolate_color(frame);
-//    std::vector<int> lowerB(mask_l_bound, mask_l_bound + sizeof(mask_l_bound) / sizeof(mask_l_bound[0]));
-//    std::vector<int> upperB(mask_u_bound, mask_u_bound + sizeof(mask_u_bound) / sizeof(mask_u_bound[0]));
-//    cv::Mat mask;
-//    cv::inRange(iso, lowerB, upperB, mask);
-    std::vector<cv::Point> contour = find_largest_contour(iso);
-
-    if (contour.empty()) {
-        ret.a = frame;
-        ret.b = iso;
-        return ret;
-    }
-
-    cv::Point centroid = find_centroid(contour);
-    cv::Rect bound_b = cv::boundingRect(contour);
-    cv::Mat processed;
-
-    frame.copyTo(processed);
-
-    cv::rectangle(processed, bound_b, cv::Scalar(0, 0, 255));
-    cv::circle(processed, centroid, 7, cv::Scalar(0, 0, 255), -1);
-
-    ret.a = processed;
-    ret.b = iso;
-    ret.point.x = centroid.x;
-    ret.point.y = centroid.y;
-    ret.point.z = cv::moments(contour).m00;
-    return ret;
+bool CubeRecog::isCubeLike(cv::Rect bb) {
+    bool propSize = bb.area() > 1000;
+    if (!propSize)
+        return false;
+    // Basically the percent change formula (what percent different is the height from the width)
+    bool ratiosOK = (abs(bb.height - bb.width) / bb.width) * 100 < 50;
+    return propSize && ratiosOK;
 }
 
-int CubeRecog::abs(int x) {
-    return x > 0 ? x : -x;
+bool CubeRecog::isColor(int blue, int green, int red) {
+    int g_low, g_high, diff, sim;
+    bool green_in_bound, is_yellow, is_grey;
+
+    g_low = red - 30;
+    g_high = red + 18;
+    // Avg of green and red - blue = make sure that there isn't too much blue
+    diff = (green + red) / 2 - blue;
+    // Used to exclude grey, white and black pixels
+    sim = abs(green - red) + abs(red - blue) + abs(green - blue);
+    green_in_bound = g_low <= green && green <= g_high;
+    is_yellow = diff >= 55;
+    is_grey = sim <= 30;
+    return is_yellow && !is_grey && green_in_bound;
+}
+
+bool CubeRecog::isEdge(Point3d a, Point3d b, Point3d c) {
+    return (dist3d(a, b) > THRESH && dist3d(a, c) > THRESH) ||
+           (dist3d(a, b) > THRESH * THRESH_CO || dist3d(a, c) > THRESH * THRESH_CO);
 }

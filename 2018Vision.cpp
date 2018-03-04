@@ -5,8 +5,8 @@
 #include <geometry_msgs/Point.h>
 #include <std_msgs/String.h>
 
-#include "src/CubeRecog.h"
-#include "src/PipeWriter.h"
+#include "include/CubeRecog.h"
+#include "include/PipeWriter.h"
 
 int main(int argc, char *argv[]) {
     // TODO CHANGE BACK TO 0 BEFORE COMMIT

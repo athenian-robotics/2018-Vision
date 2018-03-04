@@ -13,11 +13,10 @@ include_directories(${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 set(LIBS ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
-set(RECOG src/CubeRecog.cpp src/CubeRecog.h)
-set(PIPES src/PipeWriter.cpp src/PipeWriter.h)
-set(SRC 2018Vision.cpp ${RECOG} ${PIPES})
+set(VisionINCLUDE include/PipeWriter.h include/CubeRecog.h)
+set(VisionSRC src/PipeWriter.cpp src/CubeRecog.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
-add_executable(2018-Vision ${SRC})
+add_executable(2018-Vision 2018Vision.cpp ${VisionSRC} ${VisionINCLUDE})
 target_link_libraries(2018-Vision ${LIBS})
