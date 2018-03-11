@@ -13,8 +13,8 @@ include_directories(${OpenCV_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 set(LIBS ${OpenCV_LIBS} ${catkin_LIBRARIES} -lavcodec -lavformat -lavutil -lswscale -lavfilter -lavutil -lavdevice)
 
-set(VisionINCLUDE include/PipeWriter.h include/CubeRecog.h)
-set(VisionSRC src/PipeWriter.cpp src/CubeRecog.cpp)
+set(VisionINCLUDE include/Streamer.h include/CubeRecog.h)
+set(VisionSRC src/Streamer.cpp src/CubeRecog.cpp)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
