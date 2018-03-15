@@ -2,6 +2,7 @@
 #include "../include/Streamer.h"
 
 Streamer::Streamer(std::string addr, unsigned short port) {
+    this->running = true;
     this->servPort = Socket::resolveService(std::to_string(port), "udp");
     try {
         this->sock = new UDPSocket(port);
@@ -19,15 +20,20 @@ Streamer::Streamer(std::string addr, unsigned short port) {
 }
 
 bool Streamer::sendFrame(cv::Mat frame) {
+    if (!this->running)
+        return false;
     cv::imencode(".jpg", frame, encoded, compression_params);
     int total_pack = 1 + (encoded.size() - 1) / PACK_SIZE;
     int ibuf[1];
     ibuf[0] = total_pack;
-
-    sock->sendTo(ibuf, sizeof(int), servAddr, servPort);
-    for (int i = 0; i < total_pack; ++i)
-        sock->sendTo(&encoded[i * PACK_SIZE], PACK_SIZE, servAddr, servPort);
-
+    try {
+        sock->sendTo(ibuf, sizeof(int), servAddr, servPort);
+        for (int i = 0; i < total_pack; ++i)
+            sock->sendTo(&encoded[i * PACK_SIZE], PACK_SIZE, servAddr, servPort);
+    } catch (SocketException &e) {
+        std::cerr << "ERROR: " << e.what() << std::endl;
+        return false;
+    }
 #ifdef DEBUG
     clock_t nextCycle = clock();
     double dur = (nextCycle - last_cycle) / double CLOCKS_PER_SEC;
@@ -35,6 +41,12 @@ bool Streamer::sendFrame(cv::Mat frame) {
     stats << "\tFPS: " << (1 / dur) << " \tkbps:" << (PACK_SIZE * total_pack / dur / 1024 * 8) << "\n" << nextCycle-last_cycle;
     last_cycle = nextCycle;
 #endif
+    return true;
+}
+
+void Streamer::close() {
+    this->sock->disconnect();
+    running = false;
 }
 
 #ifdef DEBUG

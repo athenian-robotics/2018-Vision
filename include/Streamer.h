@@ -3,9 +3,6 @@
 #include <opencv2/highgui.hpp>
 #include <iostream>
 
-#define FRAME_HEIGHT 360
-#define FRAME_WIDTH 640
-#define FRAME_INTERVAL (1000/30)
 #define PACK_SIZE 4096 //udp pack size; note that OSX limits < 8100 bytes
 #define ENCODE_QUALITY 80
 //#define DEBUG
@@ -16,6 +13,9 @@ public:
 
     bool sendFrame(cv::Mat frame);
 
+    void close();
+
+    bool running;
 #ifdef DEBUG
     std::string getStats();
     clock_t last_cycle;
