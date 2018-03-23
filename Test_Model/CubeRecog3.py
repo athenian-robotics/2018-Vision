@@ -152,7 +152,7 @@ cv2.destroyAllWindows()
 """
 
 # calls the function and return stuff
-cv2.imshow("IMAGE2", find_color("../Test_Image/Cube2.jpg"))
+cv2.imshow("IMAGE2", find_color("../Test_Image/Cube9.jpg"))
 # cv2.imshow("IMAGE3", find_color("../Test_Image/Line3.jpg"))
 # cv2.imshow("IMAGE4", find_color("../Test_Image/Line4.jpg"))
 # cv2.imshow("IMAGE5", find_color("../Test_Image/Line5.jpg"))

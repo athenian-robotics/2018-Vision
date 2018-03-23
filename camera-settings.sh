@@ -18,6 +18,7 @@ v4l2-ctl --set-ctrl=exposure_auto=1
 v4l2-ctl --set-ctrl=exposure_absolute=156
 echo 200 > /sys/kernel/debug/tegra_fan/target_pwm
 
-mkfifo /tmp/img
-chmod a+wr /tmp/img
+# Path to 2018-Vision Code
+echo Vision code started!
+
 
