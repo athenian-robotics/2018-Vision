@@ -16,7 +16,3 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
 add_executable(2018-Vision 2018Vision.cpp ${Vision} ${PracticalSock})
 target_link_libraries(2018-Vision ${OpenCV_LIBS})
-
-set(NO_CAM_TEST include/RemoteCamera.h src/RemoteCamera.cpp)
-add_executable(Viewer StreamViewer.cpp ${Vision} ${NO_CAM_TEST} ${PracticalSock})
-target_link_libraries(Viewer ${OpenCV_LIBS})

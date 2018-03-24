@@ -1,11 +1,12 @@
 #include "../PracticalSocket.h"
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 #include <iostream>
 
 #define PACK_SIZE 4096 //udp pack size; note that OSX limits < 8100 bytes
-#define ENCODE_QUALITY 80
-//#define DEBUG
+#define ENCODE_QUALITY 50
+#define DEBUG
 
 class Streamer {
 public:
