@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     std::clock_t start;
     cv::Size frame_size = cv::Size(640, 360);
     //CubeRecog recog(640, 360);
-    Streamer streamer("dracula.local", 9999);
+    Streamer streamer("10.8.52.5", 5802);
     std::cout << "ENTERING LOOP" << std::endl;
     cv::Mat frame;
     int consecFail = 0;

@@ -9,6 +9,7 @@ CubeRecog::CubeRecog(int x, int y) {
 }
 
 cv::Mat CubeRecog::isolateSeparated(cv::Mat frame) {
+    cv::GaussianBlur(frame, frame, cv::Size(7, 7), 0, 0);
     int nRows = frame.rows, nCols = frame.cols;
     // Remember that OpenCV uses BGR
     // OpenCV contour stuff wants a single channel mat, so lets do it ourselves
@@ -81,13 +82,13 @@ Point3d CubeRecog::find_centroid(std::vector<cv::Point> contour) {
 }
 
 std::vector<cv::Point> CubeRecog::find_closest_cube(cv::Mat frame) {
+    std::vector<cv::Point> noCube;
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
 
     cv::findContours(frame, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
     // If there is no contours, then we shouldn't look.
     if (contours.empty()) {
-        std::vector<cv::Point> noCube;
         return noCube;
     }
     cv::Moments M;
@@ -97,13 +98,16 @@ std::vector<cv::Point> CubeRecog::find_closest_cube(cv::Mat frame) {
     for (int i = 0; i < contours.size(); ++i) {
         M = cv::moments(contours[i]);
         bBox = cv::boundingRect(contours[i]);
-        if (!isCubeLike(bBox))
+        if (!isCubeLike(bBox)) {
             continue;
+        }
         if (M.m00 > largest_area) {
             largest_area = M.m00;
             largest_idx = i;
         }
     }
+    if (largest_idx == -1)
+        return noCube;
     return contours[largest_idx];
 }
 
