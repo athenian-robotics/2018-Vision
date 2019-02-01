@@ -6,7 +6,7 @@
 * ROS
 * CMake
 
-**How to bulid and run on OSX/Linux**
+**How to build and run on OSX/Linux**
 1. Install dependencies
 1. Create and `cd` to a `build` directory
 1. Run `cmake .. && make` from the `build` directory
